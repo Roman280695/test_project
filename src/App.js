@@ -1,4 +1,4 @@
-import {Component, useState, useEffect} from 'react';
+import {Component, useState, useEffect, useCallback} from 'react';
 import {Container} from 'react-bootstrap';
 import './App.css';
 
@@ -65,25 +65,33 @@ const Slider = (props) => {
     const [slide, setSlide] = useState(0);
     const [autoplay, setAutoplay] = useState(false);
 
+    const getSomeImage = useCallback( () => {
+        console.log('fetching');
+        return [
+            'https://klike.net/uploads/posts/2019-05/1556708032_1.jpg',
+            'https://st2.depositphotos.com/3364363/5972/i/600/depositphotos_59728757-stock-photo-waiting-for-a-new-day.jpg'
+    
+        ]
+    }, [])
 
-    function loggin () {
-        console.log ('log')
-    };
+    // function loggin () {
+    //     console.log ('log')
+    // };
 
-    useEffect(() => {
-        console.log('Effect');
-        document.title = `Slide ${slide}`;
+    // useEffect(() => {
+    //     console.log('Effect');
+    //     document.title = `Slide ${slide}`;
 
         // window.addEventListener('click', loggin);
 
         // return () => {window.removeEventListener('click', loggin)
-    }, []);
+    // },[] );
 
    
 
-    useEffect (() => {
-        console.log('autoplay');
-    }, [autoplay])
+    // useEffect (() => {
+    //     console.log('autoplay');
+    // }, [autoplay])
 
     function changeSlide(i) {
         setSlide (slide => slide + i);
@@ -98,7 +106,19 @@ const Slider = (props) => {
     return (
         <Container>
             <div className="slider w-50 m-auto">
-                <img className="d-block w-100" src="https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg" alt="slide" />
+                              
+               {/* {
+
+                getSomeImage().map((url, i) =>{
+                    return (
+                        <img key={i} className="d-block w-100" src={url} alt="slide" />            
+                    )
+                })
+
+               } */}
+
+               <Slide getSomeImage={getSomeImage}/>
+
                 <div className="text-center mt-5">Active slide {slide} <br/> {autoplay ? 'auto' : null}</div>
                 <div className="buttons mt-3">
                     <button 
@@ -117,19 +137,28 @@ const Slider = (props) => {
 };
 
 
+const Slide = ({getSomeImage}) => {
+    const[images, setImages] = useState([]);
+
+
+    useEffect(() => {
+        setImages(getSomeImage())
+    }, [getSomeImage])
+
+    return (
+        <>
+         {images.map((url,i) => <img key={i} className="d-block w-100" src={url} alt="slide" />)}              
+
+        </>
+    )
+
+}
+
 function App() {
 
-    const [slider, setSlider] = useState(true);
-
-
   return (
-    <>
-        <button onClick={() => setSlider(false)}>Click me</button>
-        {slider ? <Slider/> : null}
-
-    </>   
-
-  );
-}
+    <Slider/>
+  ) 
+};
 
 export default App;
